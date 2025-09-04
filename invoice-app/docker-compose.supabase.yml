@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # PostgreSQL for local development (mimicking Supabase)
+  postgres:
+    image: postgres:15
+    container_name: invoice-postgres
+    environment:
+      POSTGRES_DB: invoicedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - invoice-network
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: invoice-backend-supabase
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - invoice-network
+    environment:
+      - SUPABASE_DB_URL=jdbc:postgresql://postgres:5432/invoicedb
+      - SUPABASE_DB_USERNAME=postgres
+      - SUPABASE_DB_PASSWORD=postgres
+      - FRONTEND_URL=http://localhost:3000
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: invoice-frontend-supabase
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - invoice-network
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+
+volumes:
+  postgres_data:
+
+networks:
+  invoice-network:
+    driver: bridge

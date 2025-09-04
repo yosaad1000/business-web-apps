@@ -1,0 +1,2 @@
+# This file ensures the gateway directory is tracked by git
+# The Spring Boot API Gateway will be created in this directory

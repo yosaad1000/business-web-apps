@@ -1,0 +1,81 @@
+{
+  "system": {
+    "name": "Unified ERP System",
+    "version": "1.0.0",
+    "description": "Enterprise Resource Planning System"
+  },
+  "modules": {
+    "hrms": {
+      "name": "Human Resource Management System",
+      "enabled": true,
+      "path": "/hrms",
+      "service": "employee-service",
+      "port": 8081
+    },
+    "invoice": {
+      "name": "Invoice Management",
+      "enabled": true,
+      "path": "/invoices",
+      "service": "invoice-service",
+      "port": 8082
+    },
+    "quiz": {
+      "name": "Training Platform",
+      "enabled": true,
+      "path": "/training",
+      "service": "quiz-service",
+      "port": 8083
+    },
+    "jobs": {
+      "name": "Recruitment System",
+      "enabled": true,
+      "path": "/recruitment",
+      "service": "job-service",
+      "port": 8084
+    },
+    "crud": {
+      "name": "Data Management",
+      "enabled": true,
+      "path": "/admin",
+      "service": "crud-service",
+      "port": 8085
+    }
+  },
+  "ui": {
+    "theme": {
+      "primary": "#1976d2",
+      "secondary": "#dc004e",
+      "success": "#2e7d32",
+      "warning": "#ed6c02",
+      "error": "#d32f2f",
+      "info": "#0288d1"
+    },
+    "layout": {
+      "sidebarWidth": 280,
+      "headerHeight": 64,
+      "footerHeight": 48
+    }
+  },
+  "api": {
+    "gateway": {
+      "baseUrl": "/api",
+      "timeout": 30000,
+      "retries": 3
+    },
+    "endpoints": {
+      "auth": "/auth",
+      "employees": "/employees",
+      "invoices": "/invoices",
+      "quizzes": "/quizzes",
+      "jobs": "/jobs",
+      "crud": "/data"
+    }
+  },
+  "features": {
+    "crossModuleIntegration": true,
+    "realTimeNotifications": true,
+    "auditLogging": true,
+    "roleBasedAccess": true,
+    "multiTenant": false
+  }
+}

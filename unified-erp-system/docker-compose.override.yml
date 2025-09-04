@@ -1,0 +1,99 @@
+# Docker Compose override for development
+# This file is automatically loaded by docker-compose and provides development-specific configurations
+
+version: '3.8'
+
+services:
+  erp-frontend:
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: npm start
+
+  erp-gateway:
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_COM_UNIFIEDERP=DEBUG
+    volumes:
+      - ./gateway:/app
+    ports:
+      - "5005:5005"  # Debug port
+    command: >
+      sh -c "
+        chmod +x ./mvnw &&
+        ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+      "
+
+  employee-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+      - LOGGING_LEVEL_ROOT=INFO
+    volumes:
+      - ./services/employee:/app
+    ports:
+      - "5006:5005"  # Debug port
+    command: >
+      sh -c "
+        chmod +x ./mvnw &&
+        ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+      "
+
+  invoice-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+      - LOGGING_LEVEL_ROOT=INFO
+    volumes:
+      - ./services/invoice:/app
+    ports:
+      - "5007:5005"  # Debug port
+    command: >
+      sh -c "
+        chmod +x ./mvnw &&
+        ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+      "
+
+  quiz-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+      - LOGGING_LEVEL_ROOT=INFO
+    volumes:
+      - ./services/quiz:/app
+    ports:
+      - "5008:5005"  # Debug port
+    command: >
+      sh -c "
+        chmod +x ./mvnw &&
+        ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+      "
+
+  job-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+      - LOGGING_LEVEL_ROOT=INFO
+    volumes:
+      - ./services/job:/app
+    ports:
+      - "5009:5005"  # Debug port
+    command: >
+      sh -c "
+        chmod +x ./mvnw &&
+        ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+      "
+
+  crud-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+      - LOGGING_LEVEL_ROOT=INFO
+    volumes:
+      - ./services/crud:/app
+    ports:
+      - "5010:5005"  # Debug port
+    command: >
+      sh -c "
+        chmod +x ./mvnw &&
+        ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
+      "

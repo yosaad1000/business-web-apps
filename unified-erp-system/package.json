@@ -1,0 +1,57 @@
+{
+  "name": "unified-erp-system",
+  "version": "1.0.0",
+  "description": "Unified Enterprise Resource Planning System",
+  "private": true,
+  "workspaces": [
+    "client",
+    "shared/frontend-utils"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd client && npm start",
+    "dev:backend": "cd gateway && ./mvnw spring-boot:run",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd client && npm run build",
+    "build:backend": "cd gateway && ./mvnw clean package",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd client && npm test -- --watchAll=false",
+    "test:backend": "cd gateway && ./mvnw test",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "install:all": "npm install && cd client && npm install",
+    "clean": "npm run clean:frontend && npm run clean:backend",
+    "clean:frontend": "cd client && rm -rf node_modules build",
+    "clean:backend": "cd gateway && ./mvnw clean && cd ../services/employee && ./mvnw clean && cd ../invoice && ./mvnw clean && cd ../quiz && ./mvnw clean && cd ../job && ./mvnw clean && cd ../crud && ./mvnw clean"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/unified-erp-system.git"
+  },
+  "keywords": [
+    "erp",
+    "enterprise",
+    "resource",
+    "planning",
+    "hrms",
+    "invoice",
+    "training",
+    "recruitment",
+    "react",
+    "spring-boot",
+    "supabase"
+  ],
+  "author": "Your Organization",
+  "license": "MIT"
+}

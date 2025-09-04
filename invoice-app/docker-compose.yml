@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: invoice-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: invoicedb
+      MYSQL_USER: invoiceuser
+      MYSQL_PASSWORD: invoicepass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - invoice-network
+
+  backend:
+    image: openjdk:17-jdk-slim
+    container_name: invoice-backend
+    working_dir: /app
+    volumes:
+      - ./server:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - invoice-network
+    command: >
+      sh -c "
+        chmod +x ./mvnw &&
+        ./mvnw clean package -DskipTests &&
+        java -jar -Dspring.profiles.active=docker target/server-0.0.1-SNAPSHOT.jar
+      "
+
+  frontend:
+    image: node:18-alpine
+    container_name: invoice-frontend
+    working_dir: /app
+    volumes:
+      - ./client:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - invoice-network
+    command: >
+      sh -c "
+        npm install &&
+        npm start
+      "
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+
+volumes:
+  mysql_data:
+
+networks:
+  invoice-network:
+    driver: bridge

@@ -1,0 +1,21 @@
+spring:
+  redis:
+    host: localhost
+    port: 6379
+  cloud:
+    gateway:
+      routes:
+        - id: test-route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/test/**
+
+supabase:
+  url: http://localhost:54321
+  anon-key: test-key
+  jwt:
+    secret: test-secret-key
+
+logging:
+  level:
+    com.unifiederp.gateway: DEBUG

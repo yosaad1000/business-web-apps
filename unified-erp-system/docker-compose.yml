@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  # Frontend Application
+  erp-frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: erp-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:${API_GATEWAY_PORT:-8080}
+      - REACT_APP_SUPABASE_URL=${SUPABASE_URL}
+      - REACT_APP_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    depends_on:
+      - erp-gateway
+    networks:
+      - erp-network
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+  # API Gateway
+  erp-gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: erp-gateway
+    ports:
+      - "${API_GATEWAY_PORT:-8080}:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - SUPABASE_DB_USERNAME=${SUPABASE_DB_USERNAME}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - ERP_JWT_SECRET=${ERP_JWT_SECRET}
+      - EMPLOYEE_SERVICE_URL=http://employee-service:8081
+      - INVOICE_SERVICE_URL=http://invoice-service:8082
+      - QUIZ_SERVICE_URL=http://quiz-service:8083
+      - JOB_SERVICE_URL=http://job-service:8084
+      - CRUD_SERVICE_URL=http://crud-service:8085
+    depends_on:
+      - employee-service
+      - invoice-service
+      - quiz-service
+      - job-service
+      - crud-service
+    networks:
+      - erp-network
+
+  # Employee Service (HRMS)
+  employee-service:
+    build:
+      context: ./services/employee
+      dockerfile: Dockerfile
+    container_name: employee-service
+    ports:
+      - "${EMPLOYEE_SERVICE_PORT:-8081}:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8081
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - SUPABASE_DB_USERNAME=${SUPABASE_DB_USERNAME}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - ERP_JWT_SECRET=${ERP_JWT_SECRET}
+    networks:
+      - erp-network
+
+  # Invoice Service
+  invoice-service:
+    build:
+      context: ./services/invoice
+      dockerfile: Dockerfile
+    container_name: invoice-service
+    ports:
+      - "${INVOICE_SERVICE_PORT:-8082}:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8082
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - SUPABASE_DB_USERNAME=${SUPABASE_DB_USERNAME}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - ERP_JWT_SECRET=${ERP_JWT_SECRET}
+      - EMPLOYEE_SERVICE_URL=http://employee-service:8081
+    networks:
+      - erp-network
+
+  # Quiz Service (Training Platform)
+  quiz-service:
+    build:
+      context: ./services/quiz
+      dockerfile: Dockerfile
+    container_name: quiz-service
+    ports:
+      - "${QUIZ_SERVICE_PORT:-8083}:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8083
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - SUPABASE_DB_USERNAME=${SUPABASE_DB_USERNAME}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - ERP_JWT_SECRET=${ERP_JWT_SECRET}
+      - EMPLOYEE_SERVICE_URL=http://employee-service:8081
+    networks:
+      - erp-network
+
+  # Job Service (Recruitment)
+  job-service:
+    build:
+      context: ./services/job
+      dockerfile: Dockerfile
+    container_name: job-service
+    ports:
+      - "${JOB_SERVICE_PORT:-8084}:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8084
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - SUPABASE_DB_USERNAME=${SUPABASE_DB_USERNAME}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - ERP_JWT_SECRET=${ERP_JWT_SECRET}
+      - EMPLOYEE_SERVICE_URL=http://employee-service:8081
+    networks:
+      - erp-network
+
+  # CRUD Service (General Data Management)
+  crud-service:
+    build:
+      context: ./services/crud
+      dockerfile: Dockerfile
+    container_name: crud-service
+    ports:
+      - "${CRUD_SERVICE_PORT:-8085}:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8085
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+      - SUPABASE_DB_USERNAME=${SUPABASE_DB_USERNAME}
+      - SUPABASE_DB_PASSWORD=${SUPABASE_DB_PASSWORD}
+      - ERP_JWT_SECRET=${ERP_JWT_SECRET}
+    networks:
+      - erp-network
+
+networks:
+  erp-network:
+    driver: bridge
+
+volumes:
+  node_modules:
