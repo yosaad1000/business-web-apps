@@ -7,9 +7,18 @@
 
 ## Phase 2: Core Modules
 - [ ] 4. Build Employee Management System
-  - [ ] Employee CRUD operations
-  - [ ] Department management
-  - [ ] Basic employee dashboard
+
+
+
+
+
+
+  - [x] Employee CRUD operations
+
+  - [x] Department management
+
+  - [x] Basic employee dashboard
+
 
 - [ ] 5. Build Invoice Management System
   - [ ] Invoice CRUD operations

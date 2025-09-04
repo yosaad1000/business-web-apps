@@ -7,6 +7,7 @@ import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/auth/LoginPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import HRMSRoutes from './components/hrms/HRMSRoutes';
 
 // Create theme
 const lightTheme = createTheme({
@@ -121,7 +122,7 @@ const AppContent: React.FC = () => {
               path="/hrms/*"
               element={
                 <ProtectedRoute requiredModule="HRMS">
-                  <div>HRMS Module - Coming Soon</div>
+                  <HRMSRoutes />
                 </ProtectedRoute>
               }
             />
